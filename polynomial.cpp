@@ -2,7 +2,7 @@
 #include "polynode.h"
 #include <regex>
 #include <stdexcept>
-#include <iostream>
+#include <cmath>
 using namespace std;
 
 Polynomial::Polynomial() {
@@ -33,7 +33,6 @@ Polynomial::Polynomial(const string &s): Polynomial() {
         } else {
             degree = stoi(m.str(4));
         }
-        cout << "Value/Degree: " << value << " " << m.str(3) << " " << degree << endl;
         add(value, degree);
     }
 }
@@ -141,7 +140,7 @@ PolyNode* Polynomial::subtractHelper(PolyNode* a, PolyNode* b) {
         return 0;
     }
     if (a == 0) {
-        return new PolyNode(b->data, b->degree, 0);
+        return new PolyNode(-b->data, b->degree, 0);
     }
     if (b == 0) {
         return new PolyNode(a->data, a->degree, 0);
@@ -149,18 +148,18 @@ PolyNode* Polynomial::subtractHelper(PolyNode* a, PolyNode* b) {
     PolyNode* head;
     if (a->degree > b->degree) {
         head = new PolyNode(a->data, a->degree, 0);
-        head->next = addHelper(a->next, b);
+        head->next = subtractHelper(a->next, b);
     } else if (a->degree < b->degree) {
-        head = new PolyNode(b->data, b->degree, 0);
-        head->next = addHelper(a, b->next);
+        head = new PolyNode(-b->data, b->degree, 0);
+        head->next = subtractHelper(a, b->next);
     } else {
         head = new PolyNode(a->data - b->data, a->degree, 0);
-        head->next = addHelper(a->next, b->next);
+        head->next = subtractHelper(a->next, b->next);
     }
     return head;
 }
 PolyNode* Polynomial::multiplyHelper(PolyNode* a, PolyNode* b) {
-    return new PolyNode();
+    
 }
 
 Polynomial Polynomial::operator+(const Polynomial& o) {
@@ -178,7 +177,7 @@ int Polynomial::calc(int x) {
     PolyNode* walker = head;
     int sum = 0;
     while (walker != 0) {
-        sum += walker->data * x * walker->degree;
+        sum += (int) walker->data * pow(x, walker->degree);
         walker = walker->next;
     }
     return sum;

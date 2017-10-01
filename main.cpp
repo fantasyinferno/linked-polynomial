@@ -32,24 +32,27 @@ int main() {
         // i, j contain the indices of the polynomials specified by the operands
         // x will contain the value to be evaluated in the case of "cal"
         // operator is stored in op
-        regex r("P([1-9][0-9]*)\\s*([+\\-*]|cal)\\s*(?:P|[\\-\\+]?)([0-9]+)");
+        regex r("P([1-9][0-9]*)\\s*(\\+|\\-|\\*|cal)\\s*(?:P([1-9][0-9]*)|([\\-\\+]?[0-9]+))");
         smatch m;
         if (!regex_search(s, m, r)) {
             cout << "ewwww" << endl;
             return -1;
         }
-        string op = m[2];
-        int i = stoi(m[1]), j = stoi(m[3]);
-        if (op.compare("add")) {
+        string op = m[2], secondParam = (m[3] == "") ? m[4] : m[3];
+        int i = stoi(m[1]), j = stoi(secondParam);
+        if (op == "+") {
+            cout << "add me" << endl;
             cout << p[i - 1] + p[j - 1];
-        } else if (op.compare("sub")) {
+        } else if (op == "-") {
+            cout << "subtract me" << endl;
             cout << p[i - 1] - p[j - 1];
-        } else if (op.compare("mul")) {
+        } else if (op == "*") {
             cout << p[i - 1] * p[j - 1];
-        } else if (op.compare("cal")) {
+        } else if (op == "cal") {
             cout << p[i - 1].calc(j);
         }
-        cout << "Do you want to continue this operation? (y/n)";
+        cout << endl << "Do you want to continue this operation? (y/n)";
         cin >> c; 
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
     } while (c == 'y');
 }
