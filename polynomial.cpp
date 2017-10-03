@@ -169,7 +169,13 @@ Polynomial Polynomial::operator-(const Polynomial& o) {
     return Polynomial(subtractHelper(this->head, o.head));
 }
 Polynomial Polynomial::operator*(const Polynomial& o) {
-    return Polynomial(multiplyHelper(this->head, o.head));
+    Polynomial ret;
+    for (PolyNode* walker1 = this->head; walker1 != 0; walker1 = walker1->next) {
+        for (PolyNode* walker2 = o.head; walker2 != 0; walker2 = walker2->next) {
+            ret.add(walker1->data * walker2->data, walker1->degree + walker2->degree);
+        }
+    }
+    return ret;
 }
 
 // evaluate the polynomial with a specific value of x
